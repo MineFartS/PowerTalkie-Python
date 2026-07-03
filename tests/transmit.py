@@ -1,4 +1,4 @@
-from . import PowerTalkie
+from powertalkie import PowerTalkie
 
 pt1 = PowerTalkie(port="COM3")
 
