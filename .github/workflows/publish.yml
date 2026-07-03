@@ -1,25 +1,19 @@
 name: Publish to PyPI
 on:
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
-      id-token: write
-      contents: write
+      id-token: write    # Required for OIDC identity verification
+      contents: write    # Required for creating releases and committing code
     steps:
       - uses: actions/checkout@v4
 
-      - name: Lowercase Environment Setup
-        run: |
-          echo "OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          echo "REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
       - name: Run PyPi Publish
         uses: MineFartS/PyPi-Increment-Publish@v2
-        env:
-          GITHUB_REPOSITORY_OWNER: ${{ env.OWNER_LOWER }}
-          GITHUB_REPOSITORY: ${{ env.REPO_LOWER }}
