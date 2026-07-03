@@ -16,4 +16,4 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run PyPi Publish
-        uses: MineFartS/PyPi-Increment-Publish@v2
+        uses: MineFartS/PyPi-Increment-Publish@v3
