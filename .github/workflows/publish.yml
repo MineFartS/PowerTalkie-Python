@@ -12,4 +12,4 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: MineFartS/PyPi-Increment-Publish@v3
+      - uses: MineFartS/PyPi-Increment-Publish@v4
