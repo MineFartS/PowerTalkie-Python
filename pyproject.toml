@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "powertalkie"
-version = "2"
+version = "3"
 dynamic = [ "dependencies",]
 
 [tool.hatch.metadata.hooks.requirements_txt]
