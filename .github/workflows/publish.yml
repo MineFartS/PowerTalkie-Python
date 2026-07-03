@@ -12,4 +12,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: MineFartS/PyPi-Increment-Publish@v2
+
+      - name: Lowercase Environment Setup
+        run: |
+          echo "OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Run PyPi Publish
+        uses: MineFartS/PyPi-Increment-Publish@v2
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ env.OWNER_LOWER }}
+          GITHUB_REPOSITORY: ${{ env.REPO_LOWER }}
