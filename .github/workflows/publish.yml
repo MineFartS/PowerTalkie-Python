@@ -1,0 +1,72 @@
+name: Publish to PyPI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+
+  build-and-publish:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install Pip Packages
+      run: python -m pip install pip build toml
+
+    - name: Update version in pyproject.toml
+      run: |
+        python -c "
+          from toml import load, dump
+          from os import environ
+          
+          with open('pyproject.toml', 'r') as f:
+              data = load(f)
+
+          v = int(data['project']['version'].strip('v'))
+          v = 'v{}'.format(v+1)
+
+          data['project']['version'] = v
+          
+          with open('pyproject.toml', 'w') as f:
+              dump(data, f)
+
+          with open(environ['GITHUB_ENV'], 'a') as f:
+              f.write(f'v={v}\n')
+        "
+
+    - name: Commit and push updated pyproject.toml
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@://github.com"
+        git add pyproject.toml
+        git commit -m "increment version to ${{ env.v }}"
+        git push
+
+    - name: Build distribution packages
+      run: python -m build
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.v }}
+        name: ${{ env.v }}
+        body: Increment Version
+        files: dist/* 
+
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+
